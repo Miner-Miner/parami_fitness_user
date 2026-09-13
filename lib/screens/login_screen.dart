@@ -84,101 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _openConnectionSettings() async {
-    final baseUrlController = TextEditingController(
-      text: widget.connectionSettings.baseUrl,
-    );
-    final databaseController = TextEditingController(
-      text: widget.connectionSettings.database,
-    );
-    final formKey = GlobalKey<FormState>();
-
     final result = await showDialog<ConnectionSettings>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Connection settings'),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: baseUrlController,
-                  decoration: const InputDecoration(
-                    labelText: 'Base URL',
-                    hintText: 'https://example.com',
-                  ),
-                  validator: (value) {
-                    final text = value?.trim() ?? '';
-                    if (text.isEmpty) {
-                      return 'Enter a base URL or tap Use default';
-                    }
-                    final uri = Uri.tryParse(text);
-                    if (uri == null ||
-                        !uri.hasScheme ||
-                        (uri.scheme != 'http' && uri.scheme != 'https')) {
-                      return 'Enter a valid http or https URL';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 14),
-                TextFormField(
-                  controller: databaseController,
-                  decoration: const InputDecoration(
-                    labelText: 'Database',
-                    hintText: 'parami_demo',
-                  ),
-                  validator: (value) {
-                    if ((value ?? '').trim().isEmpty) {
-                      return 'Enter a database name or tap Use default';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Leave nothing blank if you want to save custom values. Use the default action to restore the built-in connection.',
-                  style: TextStyle(color: AppColors.muted, height: 1.4),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, ConnectionSettings.defaults());
-              },
-              child: const Text('Use default'),
-            ),
-            FilledButton(
-              onPressed: () {
-                if (!formKey.currentState!.validate()) {
-                  return;
-                }
-                Navigator.pop(
-                  dialogContext,
-                  ConnectionSettings(
-                    baseUrl: baseUrlController.text.trim(),
-                    database: databaseController.text.trim(),
-                  ),
-                );
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
+      builder: (_) =>
+          _ConnectionSettingsDialog(initialSettings: widget.connectionSettings),
     );
-
-    baseUrlController.dispose();
-    databaseController.dispose();
 
     if (result == null) {
       return;
@@ -346,6 +256,124 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _ConnectionSettingsDialog extends StatefulWidget {
+  const _ConnectionSettingsDialog({required this.initialSettings});
+
+  final ConnectionSettings initialSettings;
+
+  @override
+  State<_ConnectionSettingsDialog> createState() =>
+      _ConnectionSettingsDialogState();
+}
+
+class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _baseUrlController;
+  late final TextEditingController _databaseController;
+
+  @override
+  void initState() {
+    super.initState();
+    _baseUrlController = TextEditingController(
+      text: widget.initialSettings.baseUrl,
+    );
+    _databaseController = TextEditingController(
+      text: widget.initialSettings.database,
+    );
+  }
+
+  @override
+  void dispose() {
+    _baseUrlController.dispose();
+    _databaseController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Connection settings'),
+      scrollable: true,
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _baseUrlController,
+              decoration: const InputDecoration(
+                labelText: 'Base URL',
+                hintText: 'https://example.com',
+              ),
+              validator: (value) {
+                final text = value?.trim() ?? '';
+                if (text.isEmpty) {
+                  return 'Enter a base URL or tap Use default';
+                }
+                final uri = Uri.tryParse(text);
+                if (uri == null ||
+                    !uri.hasScheme ||
+                    (uri.scheme != 'http' && uri.scheme != 'https')) {
+                  return 'Enter a valid http or https URL';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 14),
+            TextFormField(
+              controller: _databaseController,
+              decoration: const InputDecoration(
+                labelText: 'Database',
+                hintText: 'parami_demo',
+              ),
+              validator: (value) {
+                if ((value ?? '').trim().isEmpty) {
+                  return 'Enter a database name or tap Use default';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Leave nothing blank if you want to save custom values. Use the default action to restore the built-in connection.',
+              style: TextStyle(color: AppColors.muted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, ConnectionSettings.defaults());
+          },
+          child: const Text('Use default'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (!_formKey.currentState!.validate()) {
+              return;
+            }
+            Navigator.pop(
+              context,
+              ConnectionSettings(
+                baseUrl: _baseUrlController.text.trim(),
+                database: _databaseController.text.trim(),
+              ),
+            );
+          },
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }

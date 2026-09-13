@@ -21,12 +21,12 @@ class ClassesScreen extends StatefulWidget {
 
 class _ClassesScreenState extends State<ClassesScreen> {
   _ClassFilter _filter = _ClassFilter.free;
-  late Future<List<FitnessClass>> _future = _load();
+  late Future<Object?> _future = _load();
 
-  Future<List<FitnessClass>> _load() {
+  Future<Object?> _load() {
     return _filter == _ClassFilter.free
         ? widget.api.freeClasses(widget.session)
-        : widget.api.paidClasses(widget.session);
+        : widget.api.enrolledClasses(widget.session);
   }
 
   void _setFilter(_ClassFilter filter) {
@@ -64,7 +64,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Switch between free and paid classes. Free class cards open a booking flow.',
+              'Browse free classes or review the paid classes you are enrolled in.',
               style: TextStyle(color: AppColors.muted, height: 1.45),
             ),
             const SizedBox(height: 18),
@@ -85,7 +85,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
               onSelectionChanged: (selection) => _setFilter(selection.first),
             ),
             const SizedBox(height: 18),
-            FutureBuilder<List<FitnessClass>>(
+            FutureBuilder<Object?>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -103,48 +103,191 @@ class _ClassesScreenState extends State<ClassesScreen> {
                     ),
                   );
                 }
-                final items = snapshot.data ?? const <FitnessClass>[];
-                if (items.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 42),
-                    child: EmptyPane(
-                      icon: _filter == _ClassFilter.free
-                          ? Icons.sports_gymnastics_rounded
-                          : Icons.workspace_premium_rounded,
-                      title: _filter == _ClassFilter.free
-                          ? 'No free classes right now'
-                          : 'No paid classes right now',
-                      message: 'Check again later or pull to refresh.',
-                    ),
+                if (_filter == _ClassFilter.free) {
+                  final items =
+                      snapshot.data as List<FitnessClass>? ??
+                      const <FitnessClass>[];
+                  return _FreeClassesList(
+                    items: items,
+                    api: widget.api,
+                    session: widget.session,
                   );
                 }
-                return Column(
-                  children: [
-                    for (final item in items) ...[
-                      _ClassCard(
-                        item: item,
-                        isFree: _filter == _ClassFilter.free,
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => ClassDetailScreen(
-                                api: widget.api,
-                                session: widget.session,
-                                fitnessClass: item,
-                                isFree: _filter == _ClassFilter.free,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
-                );
+                final items =
+                    snapshot.data as List<EnrolledClass>? ??
+                    const <EnrolledClass>[];
+                return _EnrolledClassesList(items: items);
               },
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _FreeClassesList extends StatelessWidget {
+  const _FreeClassesList({
+    required this.items,
+    required this.api,
+    required this.session,
+  });
+
+  final List<FitnessClass> items;
+  final GymApi api;
+  final AuthSession session;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 42),
+        child: EmptyPane(
+          icon: Icons.sports_gymnastics_rounded,
+          title: 'No free classes right now',
+          message: 'Check again later or pull to refresh.',
+        ),
+      );
+    }
+    return Column(
+      children: [
+        for (final item in items) ...[
+          _ClassCard(
+            item: item,
+            isFree: true,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ClassDetailScreen(
+                    api: api,
+                    session: session,
+                    fitnessClass: item,
+                    isFree: true,
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+}
+
+class _EnrolledClassesList extends StatelessWidget {
+  const _EnrolledClassesList({required this.items});
+
+  final List<EnrolledClass> items;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 42),
+        child: EmptyPane(
+          icon: Icons.workspace_premium_rounded,
+          title: 'No enrolled paid classes',
+          message: 'Paid classes you enroll in will appear here.',
+        ),
+      );
+    }
+    return Column(
+      children: [
+        for (final item in items) ...[
+          _EnrolledClassCard(item: item),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+}
+
+class _EnrolledClassCard extends StatelessWidget {
+  const _EnrolledClassCard({required this.item});
+
+  final EnrolledClass item;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppSurface(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  item.className,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              StatusPill(
+                label: item.state.isEmpty ? 'Enrolled' : titleCase(item.state),
+                color: AppColors.warning,
+              ),
+            ],
+          ),
+          if (item.templateName.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              item.templateName,
+              style: const TextStyle(color: AppColors.muted),
+            ),
+          ],
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _InfoChip(
+                icon: Icons.event_rounded,
+                text: 'Started ${formatDate(item.dateStart)}',
+              ),
+              _InfoChip(
+                icon: Icons.person_rounded,
+                text: item.instructorName.isEmpty
+                    ? 'Gym instructor'
+                    : item.instructorName,
+              ),
+              _InfoChip(
+                icon: Icons.check_circle_outline_rounded,
+                text: '${item.sessionsDone}/${item.sessionTotal} sessions used',
+              ),
+              _InfoChip(
+                icon: Icons.event_available_rounded,
+                text: '${item.sessionsRemaining} remaining',
+              ),
+            ],
+          ),
+          if (item.timetable.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            const Text(
+              'Timetable',
+              style: TextStyle(
+                color: AppColors.ink,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (final session in item.timetable)
+                  _InfoChip(
+                    icon: Icons.schedule_rounded,
+                    text:
+                        '${formatDate(session.date)} · ${formatTimeRange(session.startTime, session.endTime)}',
+                  ),
+              ],
+            ),
+          ],
+        ],
       ),
     );
   }

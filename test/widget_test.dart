@@ -1,6 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:parami_fitness_user/models/connection_settings.dart';
 import 'package:parami_fitness_user/models/gym_models.dart';
+import 'package:parami_fitness_user/screens/login_screen.dart';
+import 'package:parami_fitness_user/services/gym_api.dart';
+import 'package:parami_fitness_user/ui/app_theme.dart';
 import 'package:parami_fitness_user/ui/formatters.dart';
 
 void main() {
@@ -22,4 +27,70 @@ void main() {
   test('formatMoney inserts separators', () {
     expect(formatMoney(1234567), 'MMK 1,234,567');
   });
+
+  testWidgets('connection settings dialog fits a short viewport', (
+    tester,
+  ) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(390, 700));
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: gymTheme(),
+        home: LoginScreen(
+          api: GymApi(),
+          connectionSettings: ConnectionSettings.defaults(),
+          onConnectionSettingsChanged: (_) async {},
+          onLoggedIn: (_) {},
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Connection settings'));
+    await tester.pumpAndSettle();
+
+    await tester.binding.setSurfaceSize(const Size(390, 300));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'connection settings dialog keeps controllers alive while closing',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: gymTheme(),
+          home: LoginScreen(
+            api: GymApi(),
+            connectionSettings: ConnectionSettings.defaults(),
+            onConnectionSettingsChanged: (_) async {},
+            onLoggedIn: (_) {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Connection settings'));
+      await tester.pumpAndSettle();
+
+      final dialog = find.byType(AlertDialog);
+      final baseUrlField = find
+          .descendant(of: dialog, matching: find.byType(TextFormField))
+          .first;
+      await tester.tap(baseUrlField);
+      await tester.enterText(baseUrlField, 'https://example.com');
+      await tester.tap(
+        find.descendant(of: dialog, matching: find.text('Cancel')),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(tester.takeException(), isNull);
+
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
