@@ -96,4 +96,119 @@ void main() {
       ),
     );
   });
+
+  test('loyalty points returns the member card balance', () async {
+    final api = GymApi(
+      baseUrl: 'https://gym.example',
+      database: 'parami_demo',
+      client: MockClient((request) async {
+        expect(request.method, 'GET');
+        expect(
+          request.url.toString(),
+          'https://gym.example/gym/api/loyalty/points?user_id=46',
+        );
+        expect(request.headers['cookie'], 'session_id=session-123');
+        expect(request.headers['x-odoo-database'], 'parami_demo');
+        return http.Response(
+          jsonEncode(<String, dynamic>{
+            'status': 'success',
+            'data': <String, dynamic>{
+              'program_id': 8,
+              'program_name': 'Gym Rewards',
+              'points': 42.5,
+              'code': 'CARD-123',
+            },
+          }),
+          200,
+        );
+      }),
+    );
+
+    final loyaltyPoints = await api.loyaltyPoints(session);
+
+    expect(loyaltyPoints, isNotNull);
+    expect(loyaltyPoints!.programName, 'Gym Rewards');
+    expect(loyaltyPoints.points, 42.5);
+    expect(loyaltyPoints.displayValue, '42.5 pts · Gym Rewards');
+  });
+
+  test('loyalty points is absent when no program is configured', () async {
+    final api = GymApi(
+      baseUrl: 'https://gym.example',
+      client: MockClient(
+        (_) async => http.Response(
+          jsonEncode(<String, dynamic>{'status': 'success', 'data': false}),
+          200,
+        ),
+      ),
+    );
+
+    expect(await api.loyaltyPoints(session), isNull);
+  });
+
+  test('change password posts the current and new password', () async {
+    final api = GymApi(
+      baseUrl: 'https://gym.example',
+      database: 'parami_demo',
+      client: MockClient((request) async {
+        expect(request.method, 'POST');
+        expect(
+          request.url.toString(),
+          'https://gym.example/gym/api/user/change_password',
+        );
+        expect(request.headers['cookie'], 'session_id=session-123');
+        expect(request.headers['x-odoo-database'], 'parami_demo');
+        expect(jsonDecode(request.body), <String, dynamic>{
+          'user_id': 46,
+          'old_password': 'current-password',
+          'new_password': 'new-password',
+        });
+        return http.Response(
+          jsonEncode(<String, dynamic>{
+            'status': 'success',
+            'data': <String, dynamic>{'user_id': 46},
+          }),
+          200,
+        );
+      }),
+    );
+
+    await api.changePassword(
+      session: session,
+      oldPassword: 'current-password',
+      newPassword: 'new-password',
+    );
+  });
+
+  test('change password surfaces an incorrect current password', () async {
+    final api = GymApi(
+      baseUrl: 'https://gym.example',
+      client: MockClient(
+        (_) async => http.Response(
+          jsonEncode(<String, dynamic>{
+            'status': 'error',
+            'error': 'Current password is incorrect',
+          }),
+          401,
+        ),
+      ),
+    );
+
+    expect(
+      api.changePassword(
+        session: session,
+        oldPassword: 'wrong-password',
+        newPassword: 'new-password',
+      ),
+      throwsA(
+        isA<ApiException>()
+            .having(
+              (error) => error.message,
+              'message',
+              'Current password is incorrect',
+            )
+            .having((error) => error.statusCode, 'statusCode', 401),
+      ),
+    );
+  });
 }

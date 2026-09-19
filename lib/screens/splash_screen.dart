@@ -10,33 +10,22 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.navy, AppColors.navyLight, AppColors.mintDark],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: AppColors.logoCanvas,
         child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const BrandMark(size: 84, light: true),
-              const SizedBox(height: 22),
-              Text(
-                'Parami Fitness',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const ParamiLogo(width: 280),
+                const SizedBox(height: 26),
+                const Text(
+                  'Your training, membership, and bookings in one place.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70, height: 1.45),
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Your training, membership, and bookings in one place.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white70, height: 1.45),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

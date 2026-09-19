@@ -4,6 +4,7 @@ import '../models/gym_models.dart';
 import '../services/gym_api.dart';
 import '../ui/app_theme.dart';
 import '../ui/ui_parts.dart';
+import 'change_password_screen.dart';
 import 'member_records_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,11 +24,22 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late Future<MemberProfile> _future = widget.api.profile(widget.session);
+  late Future<_ProfileData> _future = _loadProfile();
+
+  Future<_ProfileData> _loadProfile() async {
+    final results = await Future.wait<Object?>([
+      widget.api.profile(widget.session),
+      widget.api.loyaltyPoints(widget.session),
+    ]);
+    return _ProfileData(
+      profile: results.first as MemberProfile,
+      loyaltyPoints: results.last as LoyaltyPoints?,
+    );
+  }
 
   Future<void> _refresh() async {
     setState(() {
-      _future = widget.api.profile(widget.session);
+      _future = _loadProfile();
     });
     await _future;
   }
@@ -54,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: AppColors.muted, height: 1.45),
             ),
             const SizedBox(height: 18),
-            FutureBuilder<MemberProfile>(
+            FutureBuilder<_ProfileData>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,8 +84,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 }
-                final profile = snapshot.data;
-                if (profile == null) {
+                final profileData = snapshot.data;
+                if (profileData == null) {
                   return const Padding(
                     padding: EdgeInsets.only(top: 36),
                     child: EmptyPane(
@@ -83,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   );
                 }
+                final profile = profileData.profile;
                 return AppSurface(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,6 +146,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           profile.city,
                         ].where((value) => value.isNotEmpty).join(', '),
                       ),
+                      _ProfileLine(
+                        label: 'Loyalty points',
+                        value: profileData.loyaltyPoints?.displayValue ?? '',
+                      ),
                     ],
                   ),
                 );
@@ -167,6 +184,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _openRecords(context, MemberListKind.bookedFree);
               },
             ),
+            const SizedBox(height: 12),
+            _ProfileAction(
+              icon: Icons.lock_reset_rounded,
+              title: 'Change password',
+              subtitle: 'Update the password used to sign in to your account.',
+              onTap: () {
+                _openChangePassword();
+              },
+            ),
             const SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: () async {
@@ -192,6 +218,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  Future<void> _openChangePassword() async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) =>
+            ChangePasswordScreen(api: widget.api, session: widget.session),
+      ),
+    );
+    if (!mounted || changed != true) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Password changed. Sign in with your new password.'),
+      ),
+    );
+    await widget.onLogout();
+  }
+}
+
+class _ProfileData {
+  const _ProfileData({required this.profile, required this.loyaltyPoints});
+
+  final MemberProfile profile;
+  final LoyaltyPoints? loyaltyPoints;
 }
 
 class _ProfileLine extends StatelessWidget {

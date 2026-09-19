@@ -60,6 +60,36 @@ class GymApi {
     return MemberProfile.fromJson(asJsonMap(data));
   }
 
+  Future<LoyaltyPoints?> loyaltyPoints(AuthSession session) async {
+    final data = await _request(
+      method: 'GET',
+      path: '/gym/api/loyalty/points',
+      session: session,
+      query: <String, String>{'user_id': '${session.userId}'},
+    );
+    if (data is! Map || data.isEmpty) {
+      return null;
+    }
+    return LoyaltyPoints.fromJson(asJsonMap(data));
+  }
+
+  Future<void> changePassword({
+    required AuthSession session,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    await _request(
+      method: 'POST',
+      path: '/gym/api/user/change_password',
+      session: session,
+      body: <String, dynamic>{
+        'user_id': session.userId,
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      },
+    );
+  }
+
   Future<List<FitnessClass>> freeClasses(AuthSession session) {
     return _classes(session, '/gym/api/classes/free');
   }

@@ -2,25 +2,32 @@ import 'package:flutter/material.dart';
 
 import 'app_theme.dart';
 
-class BrandMark extends StatelessWidget {
-  const BrandMark({super.key, this.size = 58, this.light = false});
+class ParamiLogo extends StatelessWidget {
+  const ParamiLogo({super.key, this.width = 260});
 
-  final double size;
-  final bool light;
+  static const assetPath = 'assets/branding/parami_fitness_logo.png';
+
+  final double width;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: light ? Colors.white.withValues(alpha: .18) : AppColors.mint,
-        borderRadius: BorderRadius.circular(size * .31),
-      ),
-      child: Icon(
-        Icons.fitness_center_rounded,
-        color: Colors.white,
-        size: size * .52,
+    return SizedBox(
+      width: width,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(width * .05),
+        child: ClipRect(
+          child: Align(
+            alignment: Alignment.center,
+            heightFactor: .4,
+            child: Image.asset(
+              assetPath,
+              width: width,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+              semanticLabel: 'Parami Fitness',
+            ),
+          ),
+        ),
       ),
     );
   }

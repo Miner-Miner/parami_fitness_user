@@ -140,6 +140,38 @@ class MemberProfile {
   final String userRole;
 }
 
+class LoyaltyPoints {
+  const LoyaltyPoints({
+    required this.programId,
+    required this.programName,
+    required this.points,
+    required this.code,
+  });
+
+  factory LoyaltyPoints.fromJson(Map<String, dynamic> json) {
+    return LoyaltyPoints(
+      programId: intValue(json['program_id']),
+      programName: textValue(json['program_name']),
+      points: doubleValue(json['points']),
+      code: textValue(json['code']),
+    );
+  }
+
+  final int programId;
+  final String programName;
+  final double points;
+  final String code;
+
+  String get displayValue {
+    final formattedPoints = points.truncateToDouble() == points
+        ? points.toStringAsFixed(0)
+        : points.toString();
+    return programName.isEmpty
+        ? '$formattedPoints pts'
+        : '$formattedPoints pts · $programName';
+  }
+}
+
 class ClassSchedule {
   const ClassSchedule({
     required this.id,

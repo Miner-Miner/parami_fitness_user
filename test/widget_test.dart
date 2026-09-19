@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:parami_fitness_user/models/connection_settings.dart';
 import 'package:parami_fitness_user/models/gym_models.dart';
 import 'package:parami_fitness_user/screens/login_screen.dart';
+import 'package:parami_fitness_user/screens/splash_screen.dart';
 import 'package:parami_fitness_user/services/gym_api.dart';
 import 'package:parami_fitness_user/ui/app_theme.dart';
 import 'package:parami_fitness_user/ui/formatters.dart';
+import 'package:parami_fitness_user/ui/ui_parts.dart';
 
 void main() {
   test('session QR payload is stable', () {
@@ -26,6 +28,31 @@ void main() {
 
   test('formatMoney inserts separators', () {
     expect(formatMoney(1234567), 'MMK 1,234,567');
+  });
+
+  testWidgets('entry screens show the bundled Parami Fitness logo', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(theme: gymTheme(), home: const SplashScreen()),
+    );
+    expect(find.byType(ParamiLogo), findsOneWidget);
+    expect(_logoAsset(tester), ParamiLogo.assetPath);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: gymTheme(),
+        home: LoginScreen(
+          api: GymApi(),
+          connectionSettings: ConnectionSettings.defaults(),
+          onConnectionSettingsChanged: (_) async {},
+          onLoggedIn: (_) {},
+        ),
+      ),
+    );
+    expect(find.byType(ParamiLogo), findsOneWidget);
+    expect(_logoAsset(tester), ParamiLogo.assetPath);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('connection settings dialog fits a short viewport', (
@@ -93,4 +120,11 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+}
+
+String _logoAsset(WidgetTester tester) {
+  final image = tester.widget<Image>(
+    find.descendant(of: find.byType(ParamiLogo), matching: find.byType(Image)),
+  );
+  return (image.image as AssetImage).assetName;
 }

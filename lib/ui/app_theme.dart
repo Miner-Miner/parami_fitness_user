@@ -14,6 +14,7 @@ class AppColors {
   static const line = Color(0xFFDCE6E3);
   static const warning = Color(0xFFF0A530);
   static const danger = Color(0xFFD95959);
+  static const logoCanvas = Color(0xFF2B2B2B);
 }
 
 ThemeData gymTheme() {
