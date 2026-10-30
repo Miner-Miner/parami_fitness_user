@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Sign in with your customer account to manage classes, packages, and your QR pass.',
+                        'Sign in with your customer account to manage classes, packages.',
                         style: TextStyle(
                           color: AppColors.of(context).muted,
                           height: 1.45,
@@ -236,15 +236,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       )
                                     : Text('Login'),
-                              ),
-                              SizedBox(height: 14),
-                              Text(
-                                'The app always uses the customer role and keeps your session for the next launch.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: AppColors.of(context).muted,
-                                  height: 1.4,
-                                ),
                               ),
                             ],
                           ),
