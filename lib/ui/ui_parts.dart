@@ -50,12 +50,28 @@ class AppSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: color ?? Colors.white,
-      borderRadius: BorderRadius.circular(22),
+      color: color ?? AppColors.of(context).card,
+      borderRadius: BorderRadius.circular(AppColors.of(context).radius),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Padding(padding: padding, child: child),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: color == AppColors.of(context).navy
+                ? LinearGradient(
+                    colors: [
+                      AppColors.of(context).navy,
+                      AppColors.of(context).navyBright,
+                    ],
+                  )
+                : null,
+            border: AppColors.of(context).editorial
+                ? Border.all(color: AppColors.of(context).line)
+                : null,
+            borderRadius: BorderRadius.circular(AppColors.of(context).radius),
+          ),
+          child: Padding(padding: padding, child: child),
+        ),
       ),
     );
   }
@@ -72,9 +88,9 @@ class LoadingPane extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Text(label, style: const TextStyle(color: AppColors.muted)),
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text(label, style: TextStyle(color: AppColors.of(context).muted)),
         ],
       ),
     );
@@ -97,33 +113,40 @@ class EmptyPane extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(36),
+        padding: EdgeInsets.all(36),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 72,
               height: 72,
-              decoration: const BoxDecoration(
-                color: Color(0xFFE4F6EF),
+              decoration: BoxDecoration(
+                color: AppColors.of(context).accentSoft,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 34, color: AppColors.mintDark),
+              child: Icon(
+                icon,
+                size: 34,
+                color: AppColors.of(context).mintDark,
+              ),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
             Text(
               title,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w800,
-                color: AppColors.ink,
+                color: AppColors.of(context).ink,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.muted, height: 1.45),
+              style: TextStyle(
+                color: AppColors.of(context).muted,
+                height: 1.45,
+              ),
             ),
           ],
         ),
@@ -142,33 +165,36 @@ class ErrorPane extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.cloud_off_rounded,
               size: 48,
-              color: AppColors.muted,
+              color: AppColors.of(context).muted,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
               'We couldn’t load this yet',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.muted, height: 1.45),
+              style: TextStyle(
+                color: AppColors.of(context).muted,
+                height: 1.45,
+              ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Try again'),
+              icon: Icon(Icons.refresh_rounded),
+              label: Text('Try again'),
             ),
           ],
         ),
@@ -185,9 +211,9 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolvedColor = color ?? AppColors.mintDark;
+    final resolvedColor = color ?? AppColors.of(context).mintDark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: resolvedColor.withValues(alpha: .12),
         borderRadius: BorderRadius.circular(99),
@@ -218,7 +244,7 @@ class SectionLabel extends StatelessWidget {
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.ink,
+              color: AppColors.of(context).ink,
               fontWeight: FontWeight.w800,
             ),
           ),

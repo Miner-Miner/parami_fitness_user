@@ -93,26 +93,29 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return PopScope(
       canPop: !_submitting,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Change password')),
+        appBar: AppBar(title: Text('Change password')),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+            padding: EdgeInsets.fromLTRB(18, 14, 18, 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   'Keep your account secure',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: AppColors.ink,
+                    color: AppColors.of(context).ink,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: 8),
+                Text(
                   'Enter your current password, then choose a new one.',
-                  style: TextStyle(color: AppColors.muted, height: 1.45),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.45,
+                  ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 AppSurface(
                   child: Form(
                     key: _formKey,
@@ -136,7 +139,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14),
                         _PasswordField(
                           controller: _newPasswordController,
                           label: 'New password',
@@ -164,7 +167,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14),
                         _PasswordField(
                           controller: _confirmPasswordController,
                           label: 'Confirm new password',
@@ -188,27 +191,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           },
                         ),
                         if (_error != null) ...[
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16),
                           Text(
                             _error!,
-                            style: const TextStyle(
-                              color: AppColors.danger,
+                            style: TextStyle(
+                              color: AppColors.of(context).danger,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
-                        const SizedBox(height: 22),
+                        SizedBox(height: 22),
                         FilledButton(
                           onPressed: _submitting ? null : _submit,
                           child: _submitting
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 22,
                                   height: 22,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.4,
                                   ),
                                 )
-                              : const Text('Change password'),
+                              : Text('Change password'),
                         ),
                       ],
                     ),
@@ -254,7 +257,7 @@ class _PasswordField extends StatelessWidget {
           : TextInputAction.done,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: const Icon(Icons.lock_outline_rounded),
+        prefixIcon: Icon(Icons.lock_outline_rounded),
         suffixIcon: IconButton(
           tooltip: visible ? 'Hide password' : 'Show password',
           onPressed: onVisibilityChanged,

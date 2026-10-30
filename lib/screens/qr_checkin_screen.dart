@@ -105,7 +105,7 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
 
   Future<void> _ensureLocationAccess() async {
     if (!await Geolocator.isLocationServiceEnabled()) {
-      throw const _CheckInException(
+      throw _CheckInException(
         'Turn on Location Services to check in at the gym.',
       );
     }
@@ -115,12 +115,12 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
       permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.denied) {
-      throw const _CheckInException(
+      throw _CheckInException(
         'Location permission is needed to confirm that you are at the gym.',
       );
     }
     if (permission == LocationPermission.deniedForever) {
-      throw const _CheckInException(
+      throw _CheckInException(
         'Location permission is turned off for this app. Enable it in your device settings, then try again.',
       );
     }
@@ -128,12 +128,12 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
 
   Future<Position> _currentPosition() async {
     if (!await Geolocator.isLocationServiceEnabled()) {
-      throw const _CheckInException(
+      throw _CheckInException(
         'Location Services were turned off. Turn them on and scan again.',
       );
     }
     return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
+      locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
         timeLimit: Duration(seconds: 20),
       ),
@@ -221,11 +221,11 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan gym QR')),
+      appBar: AppBar(title: Text('Scan gym QR')),
       body: SafeArea(
         top: false,
         child: _preparing
-            ? const LoadingPane(label: 'Preparing secure check-in…')
+            ? LoadingPane(label: 'Preparing secure check-in…')
             : !_locationReady
             ? ErrorPane(
                 message: _setupError ?? 'Location access is unavailable.',
@@ -233,19 +233,24 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
               )
             : Column(
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.fromLTRB(20, 14, 20, 16),
                     child: Text(
                       'Point your camera at the gym’s fixed self check-in QR poster.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.muted, height: 1.4),
+                      style: TextStyle(
+                        color: AppColors.of(context).muted,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      padding: EdgeInsets.symmetric(horizontal: 18),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(
+                          AppColors.of(context).radius,
+                        ),
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
@@ -258,9 +263,9 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
                                     'We could not open your camera. Allow camera access and try again.',
                               ),
                             ),
-                            const IgnorePointer(child: _ScanFrame()),
+                            IgnorePointer(child: _ScanFrame()),
                             if (_submitting)
-                              const ColoredBox(
+                              ColoredBox(
                                 color: Color(0xA6102331),
                                 child: Center(
                                   child: Column(
@@ -292,12 +297,15 @@ class _QrCheckInScreenState extends State<QrCheckInScreen>
                       ),
                     ),
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.fromLTRB(24, 18, 24, 24),
                     child: Text(
                       'Your current location is sent only with this check-in so the gym can confirm you are on site.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.muted, height: 1.4),
+                      style: TextStyle(
+                        color: AppColors.of(context).muted,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                 ],
@@ -316,49 +324,49 @@ class _CheckInSuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasSessions = package.totalSessions > 0;
     return Scaffold(
-      appBar: AppBar(title: const Text('Check-in complete')),
+      appBar: AppBar(title: Text('Check-in complete')),
       body: SafeArea(
         top: false,
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             child: AppSurface(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     width: 76,
                     height: 76,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE4F6EF),
+                    decoration: BoxDecoration(
+                      color: AppColors.of(context).accentSoft,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.check_circle_rounded,
-                      color: AppColors.mintDark,
+                      color: AppColors.of(context).mintDark,
                       size: 44,
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18),
                   Text(
                     'You’re checked in',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: AppColors.ink,
+                      color: AppColors.of(context).ink,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     package.productName,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.muted,
+                    style: TextStyle(
+                      color: AppColors.of(context).muted,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 22),
+                  SizedBox(height: 22),
                   _ResultLine(
                     label: hasSessions ? 'Sessions remaining' : 'Membership',
                     value: hasSessions
@@ -366,16 +374,16 @@ class _CheckInSuccessScreen extends StatelessWidget {
                         : 'Active',
                   ),
                   if (package.expirationDate != null) ...[
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     _ResultLine(
                       label: 'Expires',
                       value: formatDate(package.expirationDate),
                     ),
                   ],
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   FilledButton(
                     onPressed: () => Navigator.of(context).pop(package),
-                    child: const Text('Done'),
+                    child: Text('Done'),
                   ),
                 ],
               ),
@@ -400,16 +408,16 @@ class _ResultLine extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
-              color: AppColors.muted,
+            style: TextStyle(
+              color: AppColors.of(context).muted,
               fontWeight: FontWeight.w700,
             ),
           ),
         ),
         Text(
           value,
-          style: const TextStyle(
-            color: AppColors.ink,
+          style: TextStyle(
+            color: AppColors.of(context).ink,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -429,7 +437,7 @@ class _ScanFrame extends StatelessWidget {
         height: 230,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white, width: 3),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(AppColors.of(context).radius),
           boxShadow: const [
             BoxShadow(color: Color(0x55000000), blurRadius: 16),
           ],
@@ -448,28 +456,24 @@ class _ScanFailure extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: const Color(0xC8102331),
+      color: Color(0xC8102331),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.info_outline_rounded,
-                color: Colors.white,
-                size: 36,
-              ),
-              const SizedBox(height: 14),
+              Icon(Icons.info_outline_rounded, color: Colors.white, size: 36),
+              SizedBox(height: 14),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, height: 1.4),
+                style: TextStyle(color: Colors.white, height: 1.4),
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
               FilledButton(
                 onPressed: () => onTryAgain(),
-                child: const Text('Scan again'),
+                child: Text('Scan again'),
               ),
             ],
           ),
@@ -487,23 +491,19 @@ class _CameraError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: AppColors.navy,
+      color: AppColors.of(context).navy,
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(28),
+          padding: EdgeInsets.all(28),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.white,
-                size: 44,
-              ),
-              const SizedBox(height: 16),
+              Icon(Icons.camera_alt_outlined, color: Colors.white, size: 44),
+              SizedBox(height: 16),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, height: 1.45),
+                style: TextStyle(color: Colors.white, height: 1.45),
               ),
             ],
           ),

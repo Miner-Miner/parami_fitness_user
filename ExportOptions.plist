@@ -12,8 +12,8 @@
   <string>Apple Distribution</string>
   <key>provisioningProfiles</key>
   <dict>
-    <key>website.coreaxistechnologies.paramiFitnessTrainer</key>
-    <string>Parami Trainer</string>
+    <key>website.coreaxistechnologies.paramiFitnessUser</key>
+    <string>Parami User</string>
   </dict>
 </dict>
 </plist>

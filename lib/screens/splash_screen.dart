@@ -10,16 +10,16 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: AppColors.logoCanvas,
+        color: AppColors.of(context).logoCanvas,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const ParamiLogo(width: 280),
-                const SizedBox(height: 26),
-                const Text(
+                ParamiLogo(width: 280),
+                SizedBox(height: 26),
+                Text(
                   'Your training, membership, and bookings in one place.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white70, height: 1.45),

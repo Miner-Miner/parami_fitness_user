@@ -14,7 +14,7 @@ class ApiConfig {
 
   static const String defaultDatabase = String.fromEnvironment(
     'ODOO_DATABASE',
-    defaultValue: 'parami_19_09_26',
+    defaultValue: 'parami',
   );
 
   static String normalizeBaseUrl(String value) {

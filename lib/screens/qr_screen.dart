@@ -48,70 +48,75 @@ class QrScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+        padding: EdgeInsets.fromLTRB(18, 14, 18, 24),
         children: [
           Text(
             'QR Pass',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: AppColors.ink,
+              color: AppColors.of(context).ink,
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             'Use your pass for staff scanning, or scan the gym QR to check in yourself.',
-            style: TextStyle(color: AppColors.muted, height: 1.45),
+            style: TextStyle(color: AppColors.of(context).muted, height: 1.45),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           AppSurface(
-            padding: const EdgeInsets.all(22),
+            padding: EdgeInsets.all(22),
             child: Column(
               children: [
                 Text(
                   session.name,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.ink,
+                    color: AppColors.of(context).ink,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Text(
                   session.memberId.isEmpty
                       ? 'Member ID unavailable'
                       : session.memberId,
-                  style: const TextStyle(color: AppColors.muted),
+                  style: TextStyle(color: AppColors.of(context).muted),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18),
                 Container(
-                  padding: const EdgeInsets.all(18),
+                  padding: EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.line),
+                    borderRadius: BorderRadius.circular(
+                      AppColors.of(context).radius,
+                    ),
+                    border: Border.all(color: AppColors.of(context).line),
                   ),
                   child: QrImageView(
                     data: session.qrPayload,
                     size: 260,
-                    eyeStyle: const QrEyeStyle(
+                    eyeStyle: QrEyeStyle(
                       eyeShape: QrEyeShape.square,
-                      color: AppColors.navy,
+                      color: AppColors.of(context).navy,
                     ),
-                    dataModuleStyle: const QrDataModuleStyle(
+                    dataModuleStyle: QrDataModuleStyle(
                       dataModuleShape: QrDataModuleShape.square,
-                      color: AppColors.mintDark,
+                      color: AppColors.of(context).mintDark,
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
-                const Text(
+                SizedBox(height: 18),
+                Text(
                   'Show this QR at the gym entrance or staff desk.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.muted, height: 1.45),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.45,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           AppSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,45 +124,51 @@ class QrScreen extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(11),
+                      padding: EdgeInsets.all(11),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F7F1),
+                        color: AppColors.of(context).accentSoft,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.qr_code_scanner_rounded,
-                        color: AppColors.mintDark,
+                        color: AppColors.of(context).mintDark,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Self check-in',
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
-                              color: AppColors.ink,
+                              color: AppColors.of(context).ink,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                SizedBox(height: 12),
+                Text(
                   'At the gym, scan the fixed QR poster. We use your current location only to confirm you are on site.',
-                  style: TextStyle(color: AppColors.muted, height: 1.45),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.45,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 FilledButton.icon(
                   onPressed: _canScanGymQr ? () => _openCheckIn(context) : null,
-                  icon: const Icon(Icons.qr_code_scanner_rounded),
-                  label: const Text('Scan gym QR to check in'),
+                  icon: Icon(Icons.qr_code_scanner_rounded),
+                  label: Text('Scan gym QR to check in'),
                 ),
                 if (!_canScanGymQr) ...[
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10),
+                  Text(
                     'QR scanning is available on Android, iPhone/iPad, macOS, and the web.',
-                    style: TextStyle(color: AppColors.muted, height: 1.4),
+                    style: TextStyle(
+                      color: AppColors.of(context).muted,
+                      height: 1.4,
+                    ),
                   ),
                 ],
               ],

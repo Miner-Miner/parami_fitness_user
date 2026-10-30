@@ -50,34 +50,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: RefreshIndicator(
         onRefresh: _refresh,
         child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+          physics: AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(18, 14, 18, 24),
           children: [
             Text(
               'Profile',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppColors.ink,
+                color: AppColors.of(context).ink,
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               'Your account, packages, enrolled classes, and booked free classes.',
-              style: TextStyle(color: AppColors.muted, height: 1.45),
+              style: TextStyle(
+                color: AppColors.of(context).muted,
+                height: 1.45,
+              ),
             ),
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
             FutureBuilder<_ProfileData>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.only(top: 36),
                     child: LoadingPane(),
                   );
                 }
                 if (snapshot.hasError) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 36),
+                    padding: EdgeInsets.only(top: 36),
                     child: ErrorPane(
                       message: snapshot.error.toString(),
                       onRetry: _refresh,
@@ -86,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
                 final profileData = snapshot.data;
                 if (profileData == null) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.only(top: 36),
                     child: EmptyPane(
                       icon: Icons.person_off_rounded,
@@ -102,32 +105,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             radius: 26,
-                            backgroundColor: Color(0xFFE8F7F1),
+                            backgroundColor: AppColors.of(context).accentSoft,
                             child: Icon(
                               Icons.person_rounded,
-                              color: AppColors.mintDark,
+                              color: AppColors.of(context).mintDark,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   profile.name,
-                                  style: const TextStyle(
-                                    color: AppColors.ink,
+                                  style: TextStyle(
+                                    color: AppColors.of(context).ink,
                                     fontSize: 17,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4),
                                 Text(
                                   profile.login,
-                                  style: const TextStyle(
-                                    color: AppColors.muted,
+                                  style: TextStyle(
+                                    color: AppColors.of(context).muted,
                                   ),
                                 ),
                               ],
@@ -135,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
+                      SizedBox(height: 18),
                       _ProfileLine(label: 'Member ID', value: profile.memberId),
                       _ProfileLine(label: 'Phone', value: profile.phone),
                       _ProfileLine(label: 'Email', value: profile.email),
@@ -155,9 +158,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-            const SizedBox(height: 18),
-            const SectionLabel(title: 'Quick access'),
-            const SizedBox(height: 12),
+            SizedBox(height: 18),
+            SectionLabel(title: 'Quick access'),
+            SizedBox(height: 12),
             _ProfileAction(
               icon: Icons.card_membership_rounded,
               title: 'Packages',
@@ -166,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _openRecords(context, MemberListKind.packages);
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _ProfileAction(
               icon: Icons.event_available_rounded,
               title: 'Enrolled classes',
@@ -175,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _openRecords(context, MemberListKind.enrolled);
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _ProfileAction(
               icon: Icons.event_note_rounded,
               title: 'Booked free classes',
@@ -184,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _openRecords(context, MemberListKind.bookedFree);
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _ProfileAction(
               icon: Icons.lock_reset_rounded,
               title: 'Change password',
@@ -193,13 +196,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _openChangePassword();
               },
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             OutlinedButton.icon(
               onPressed: () async {
                 await widget.onLogout();
               },
-              icon: const Icon(Icons.logout_rounded),
-              label: const Text('Logout'),
+              icon: Icon(Icons.logout_rounded),
+              label: Text('Logout'),
             ),
           ],
         ),
@@ -230,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Password changed. Sign in with your new password.'),
       ),
     );
@@ -254,7 +257,7 @@ class _ProfileLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -262,8 +265,8 @@ class _ProfileLine extends StatelessWidget {
             width: 92,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.muted,
+              style: TextStyle(
+                color: AppColors.of(context).muted,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -271,8 +274,8 @@ class _ProfileLine extends StatelessWidget {
           Expanded(
             child: Text(
               value.isEmpty ? '—' : value,
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.of(context).ink,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -303,34 +306,37 @@ class _ProfileAction extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F7F1),
-              borderRadius: BorderRadius.circular(16),
+              color: AppColors.of(context).accentSoft,
+              borderRadius: BorderRadius.circular(AppColors.of(context).radius),
             ),
-            child: Icon(icon, color: AppColors.mintDark),
+            child: Icon(icon, color: AppColors.of(context).mintDark),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.ink,
+                  style: TextStyle(
+                    color: AppColors.of(context).ink,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: AppColors.muted, height: 1.4),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
+          Icon(Icons.chevron_right_rounded, color: AppColors.of(context).muted),
         ],
       ),
     );

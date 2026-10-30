@@ -41,14 +41,13 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       widget.fitnessClass.startDate ?? DateTime.now(),
     );
     final lastDate = DateUtils.dateOnly(
-      widget.fitnessClass.endDate ??
-          DateTime.now().add(const Duration(days: 180)),
+      widget.fitnessClass.endDate ?? DateTime.now().add(Duration(days: 180)),
     );
     final initial =
         _selectedDate ?? _firstValidDateOrNull(schedule, firstDate, lastDate);
     if (initial == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('No valid date is available for this schedule.'),
         ),
       );
@@ -78,7 +77,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
   ) {
     var candidate = DateUtils.dateOnly(firstDate);
     while (candidate.weekday != schedule.dartWeekday) {
-      candidate = candidate.add(const Duration(days: 1));
+      candidate = candidate.add(Duration(days: 1));
     }
     if (candidate.isAfter(DateUtils.dateOnly(lastDate))) {
       return null;
@@ -110,12 +109,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Booking confirmed'),
-          content: const Text('Your free class has been booked successfully.'),
+          title: Text('Booking confirmed'),
+          content: Text('Your free class has been booked successfully.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: Text('OK'),
             ),
           ],
         ),
@@ -135,7 +134,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not book this class right now.')),
+        SnackBar(content: Text('Could not book this class right now.')),
       );
     } finally {
       if (mounted) {
@@ -152,7 +151,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       appBar: AppBar(title: Text(widget.fitnessClass.name)),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+          padding: EdgeInsets.fromLTRB(18, 12, 18, 24),
           children: [
             AppSurface(
               child: Column(
@@ -165,7 +164,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                           widget.fitnessClass.name,
                           style: Theme.of(context).textTheme.headlineSmall
                               ?.copyWith(
-                                color: AppColors.ink,
+                                color: AppColors.of(context).ink,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
@@ -173,19 +172,19 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                       StatusPill(
                         label: widget.isFree ? 'Free class' : 'Paid class',
                         color: widget.isFree
-                            ? AppColors.mintDark
-                            : AppColors.warning,
+                            ? AppColors.of(context).mintDark
+                            : AppColors.of(context).warning,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(
                     widget.fitnessClass.templateName.isEmpty
                         ? widget.fitnessClass.classType
                         : widget.fitnessClass.templateName,
-                    style: const TextStyle(color: AppColors.muted),
+                    style: TextStyle(color: AppColors.of(context).muted),
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18),
                   Wrap(
                     spacing: 10,
                     runSpacing: 10,
@@ -215,21 +214,24 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             if (widget.isFree) ...[
-              const SectionLabel(title: 'Book this free class'),
-              const SizedBox(height: 12),
+              SectionLabel(title: 'Book this free class'),
+              SizedBox(height: 12),
               AppSurface(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Choose a schedule and a matching date before booking.',
-                      style: TextStyle(color: AppColors.muted, height: 1.45),
+                      style: TextStyle(
+                        color: AppColors.of(context).muted,
+                        height: 1.45,
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     if (_schedules.isEmpty)
-                      const EmptyPane(
+                      EmptyPane(
                         icon: Icons.event_busy_rounded,
                         title: 'No schedule found',
                         message: 'This class does not expose a schedule yet.',
@@ -261,7 +263,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                             ),
                         ],
                       ),
-                    const SizedBox(height: 18),
+                    SizedBox(height: 18),
                     Row(
                       children: [
                         Expanded(
@@ -269,7 +271,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                             onPressed: _selectedSchedule == null
                                 ? null
                                 : _pickDate,
-                            icon: const Icon(Icons.date_range_rounded),
+                            icon: Icon(Icons.date_range_rounded),
                             label: Text(
                               _selectedDate == null
                                   ? 'Pick date'
@@ -279,7 +281,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 18),
+                    SizedBox(height: 18),
                     FilledButton(
                       onPressed:
                           (_selectedSchedule == null ||
@@ -288,41 +290,44 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                           ? null
                           : _book,
                       child: _booking
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 22,
                               height: 22,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.4,
                               ),
                             )
-                          : const Text('Book now'),
+                          : Text('Book now'),
                     ),
                   ],
                 ),
               ),
             ] else ...[
-              const SectionLabel(title: 'Paid class details'),
-              const SizedBox(height: 12),
-              const AppSurface(
+              SectionLabel(title: 'Paid class details'),
+              SizedBox(height: 12),
+              AppSurface(
                 child: Text(
                   'Paid classes are shown for reference. The current API exposes enrollment history, not a paid booking endpoint.',
-                  style: TextStyle(color: AppColors.muted, height: 1.45),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.45,
+                  ),
                 ),
               ),
             ],
             if (_schedules.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              const SectionLabel(title: 'Schedules'),
-              const SizedBox(height: 12),
+              SizedBox(height: 16),
+              SectionLabel(title: 'Schedules'),
+              SizedBox(height: 12),
               for (final schedule in _schedules) ...[
                 AppSurface(
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.schedule_rounded,
-                        color: AppColors.mintDark,
+                        color: AppColors.of(context).mintDark,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           schedule.displayName.isEmpty
@@ -331,16 +336,16 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
                                   schedule.endTime,
                                 )
                               : schedule.displayName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            color: AppColors.ink,
+                            color: AppColors.of(context).ink,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
               ],
             ],
           ],
@@ -359,20 +364,20 @@ class _DetailChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F7F6),
+        color: AppColors.of(context).canvas,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.mintDark),
-          const SizedBox(width: 6),
+          Icon(icon, size: 16, color: AppColors.of(context).mintDark),
+          SizedBox(width: 6),
           Text(
             text,
-            style: const TextStyle(
-              color: AppColors.ink,
+            style: TextStyle(
+              color: AppColors.of(context).ink,
               fontWeight: FontWeight.w600,
             ),
           ),

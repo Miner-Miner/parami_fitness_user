@@ -66,6 +66,7 @@ void main() {
         theme: gymTheme(),
         home: LoginScreen(
           api: GymApi(),
+          showConnectionSettings: true,
           connectionSettings: ConnectionSettings.defaults(),
           onConnectionSettingsChanged: (_) async {},
           onLoggedIn: (_) {},
@@ -91,6 +92,7 @@ void main() {
           theme: gymTheme(),
           home: LoginScreen(
             api: GymApi(),
+            showConnectionSettings: true,
             connectionSettings: ConnectionSettings.defaults(),
             onConnectionSettingsChanged: (_) async {},
             onLoggedIn: (_) {},

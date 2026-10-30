@@ -5,6 +5,7 @@ import '../models/connection_settings.dart';
 import '../models/gym_models.dart';
 import '../services/gym_api.dart';
 import '../ui/app_theme.dart';
+import '../ui/appearance.dart';
 import '../ui/ui_parts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,9 +15,11 @@ class LoginScreen extends StatefulWidget {
     required this.connectionSettings,
     required this.onConnectionSettingsChanged,
     required this.onLoggedIn,
+    this.showConnectionSettings = false,
   });
 
   final GymApi api;
+  final bool showConnectionSettings;
   final ConnectionSettings connectionSettings;
   final Future<void> Function(ConnectionSettings settings)
   onConnectionSettingsChanged;
@@ -106,9 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Connection settings updated.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Connection settings updated.')));
   }
 
   @override
@@ -118,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+              padding: EdgeInsets.symmetric(horizontal: 22, vertical: 18),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight - 36,
@@ -127,41 +130,52 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const SizedBox(height: 18),
-                      const Center(child: ParamiLogo(width: 240)),
-                      const SizedBox(height: 24),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: AppearanceControls(),
+                      ),
+                      SizedBox(height: 18),
+                      Center(child: ParamiLogo(width: 240)),
+                      SizedBox(height: 24),
                       Text(
                         'Welcome back',
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
-                              color: AppColors.ink,
+                              color: AppColors.of(context).ink,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Sign in with your customer account to manage classes, packages, and your QR pass.',
-                        style: TextStyle(color: AppColors.muted, height: 1.45),
-                      ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          onPressed: _loading ? null : _openConnectionSettings,
-                          icon: const Icon(Icons.settings_rounded),
-                          label: const Text('Connection settings'),
-                        ),
-                      ),
+                      SizedBox(height: 10),
                       Text(
-                        'Using ${widget.connectionSettings.normalizedBaseUrl} • ${widget.connectionSettings.database}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: AppColors.muted,
-                          fontSize: 12.5,
-                          height: 1.35,
+                        'Sign in with your customer account to manage classes, packages, and your QR pass.',
+                        style: TextStyle(
+                          color: AppColors.of(context).muted,
+                          height: 1.45,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 20),
+                      if (widget.showConnectionSettings) ...[
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: _loading
+                                ? null
+                                : _openConnectionSettings,
+                            icon: Icon(Icons.settings_rounded),
+                            label: Text('Connection settings'),
+                          ),
+                        ),
+                        Text(
+                          'Using ${widget.connectionSettings.normalizedBaseUrl} • ${widget.connectionSettings.database}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.of(context).muted,
+                            fontSize: 12.5,
+                            height: 1.35,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                      ],
                       AppSurface(
                         child: Form(
                           key: _formKey,
@@ -171,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 controller: _loginController,
                                 keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: 'Login',
                                   prefixIcon: Icon(
                                     Icons.person_outline_rounded,
@@ -184,11 +198,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 14),
+                              SizedBox(height: 14),
                               TextFormField(
                                 controller: _passwordController,
                                 obscureText: true,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: 'Password',
                                   prefixIcon: Icon(Icons.lock_outline_rounded),
                                 ),
@@ -201,34 +215,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onFieldSubmitted: (_) => _submit(),
                               ),
                               if (_error != null) ...[
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16),
                                 Text(
                                   _error!,
-                                  style: const TextStyle(
-                                    color: AppColors.danger,
+                                  style: TextStyle(
+                                    color: AppColors.of(context).danger,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ],
-                              const SizedBox(height: 22),
+                              SizedBox(height: 22),
                               FilledButton(
                                 onPressed: _loading ? null : _submit,
                                 child: _loading
-                                    ? const SizedBox(
+                                    ? SizedBox(
                                         width: 22,
                                         height: 22,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2.4,
                                         ),
                                       )
-                                    : const Text('Login'),
+                                    : Text('Login'),
                               ),
-                              const SizedBox(height: 14),
-                              const Text(
+                              SizedBox(height: 14),
+                              Text(
                                 'The app always uses the customer role and keeps your session for the next launch.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: AppColors.muted,
+                                  color: AppColors.of(context).muted,
                                   height: 1.4,
                                 ),
                               ),
@@ -236,14 +250,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      const Spacer(),
-                      const Padding(
+                      Spacer(),
+                      Padding(
                         padding: EdgeInsets.only(top: 18),
                         child: Text(
                           'Parami Fitness User App',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: AppColors.muted,
+                            color: AppColors.of(context).muted,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -296,7 +310,7 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Connection settings'),
+      title: Text('Connection settings'),
       scrollable: true,
       content: Form(
         key: _formKey,
@@ -305,7 +319,7 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
           children: [
             TextFormField(
               controller: _baseUrlController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Base URL',
                 hintText: 'https://example.com',
               ),
@@ -323,10 +337,10 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
                 return null;
               },
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
             TextFormField(
               controller: _databaseController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Database',
                 hintText: 'parami_demo',
               ),
@@ -337,10 +351,10 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
                 return null;
               },
             ),
-            const SizedBox(height: 10),
-            const Text(
+            SizedBox(height: 10),
+            Text(
               'Leave nothing blank if you want to save custom values. Use the default action to restore the built-in connection.',
-              style: TextStyle(color: AppColors.muted, height: 1.4),
+              style: TextStyle(color: AppColors.of(context).muted, height: 1.4),
             ),
           ],
         ),
@@ -350,13 +364,13 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel'),
+          child: Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, ConnectionSettings.defaults());
           },
-          child: const Text('Use default'),
+          child: Text('Use default'),
         ),
         FilledButton(
           onPressed: () {
@@ -371,7 +385,7 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
               ),
             );
           },
-          child: const Text('Save'),
+          child: Text('Save'),
         ),
       ],
     );

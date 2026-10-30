@@ -13,20 +13,20 @@ class HomeDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+        physics: AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.fromLTRB(18, 14, 18, 24),
         children: [
           AppSurface(
-            padding: const EdgeInsets.all(22),
-            color: AppColors.navy,
+            padding: EdgeInsets.all(22),
+            color: AppColors.of(context).navy,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const StatusPill(
+                StatusPill(
                   label: 'Live member access',
-                  color: AppColors.lime,
+                  color: AppColors.of(context).lime,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Text(
                   'Hello, ${session.name}',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -34,27 +34,27 @@ class HomeDashboard extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   'Member ID ${session.memberId.isEmpty ? 'not assigned' : session.memberId}',
-                  style: const TextStyle(color: Colors.white70, height: 1.4),
+                  style: TextStyle(color: Colors.white70, height: 1.4),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: _QuickCard(
                         icon: Icons.calendar_month_rounded,
                         label: 'Classes',
-                        color: AppColors.mint,
+                        color: AppColors.of(context).mint,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: _QuickCard(
                         icon: Icons.qr_code_rounded,
                         label: 'QR Pass',
-                        color: AppColors.lime,
+                        color: AppColors.of(context).lime,
                       ),
                     ),
                   ],
@@ -62,24 +62,24 @@ class HomeDashboard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 18),
-          const SectionLabel(title: 'What you can do'),
-          const SizedBox(height: 12),
-          const _ActionCard(
+          SizedBox(height: 18),
+          SectionLabel(title: 'What you can do'),
+          SizedBox(height: 12),
+          _ActionCard(
             icon: Icons.sports_gymnastics_rounded,
             title: 'Browse free and paid classes',
             subtitle:
                 'See schedules, class details, and book free classes with one tap.',
           ),
-          const SizedBox(height: 12),
-          const _ActionCard(
+          SizedBox(height: 12),
+          _ActionCard(
             icon: Icons.card_membership_rounded,
             title: 'Keep an eye on package expiry',
             subtitle:
                 'We pop up the nearest expiry reminder whenever you return home.',
           ),
-          const SizedBox(height: 12),
-          const _ActionCard(
+          SizedBox(height: 12),
+          _ActionCard(
             icon: Icons.person_outline_rounded,
             title: 'Open your profile tools',
             subtitle:
@@ -105,23 +105,20 @@ class _QuickCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: .12),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppColors.of(context).radius),
         border: Border.all(color: Colors.white.withValues(alpha: .16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 28),
-          const SizedBox(height: 28),
+          SizedBox(height: 28),
           Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-            ),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -147,30 +144,33 @@ class _ActionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE9F7F2),
-              borderRadius: BorderRadius.circular(16),
+              color: AppColors.of(context).accentSoft,
+              borderRadius: BorderRadius.circular(AppColors.of(context).radius),
             ),
-            child: Icon(icon, color: AppColors.mintDark),
+            child: Icon(icon, color: AppColors.of(context).mintDark),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: AppColors.ink,
+                  style: TextStyle(
+                    color: AppColors.of(context).ink,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: AppColors.muted, height: 1.45),
+                  style: TextStyle(
+                    color: AppColors.of(context).muted,
+                    height: 1.45,
+                  ),
                 ),
               ],
             ),

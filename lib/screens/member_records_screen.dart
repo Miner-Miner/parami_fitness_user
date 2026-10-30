@@ -64,21 +64,21 @@ class _MemberRecordsScreenState extends State<MemberRecordsScreen> {
         child: RefreshIndicator(
           onRefresh: _refresh,
           child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+            physics: AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(18, 14, 18, 24),
             children: [
               FutureBuilder<Object?>(
                 future: _future,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
+                    return Padding(
                       padding: EdgeInsets.only(top: 44),
                       child: LoadingPane(),
                     );
                   }
                   if (snapshot.hasError) {
                     return Padding(
-                      padding: const EdgeInsets.only(top: 44),
+                      padding: EdgeInsets.only(top: 44),
                       child: ErrorPane(
                         message: snapshot.error.toString(),
                         onRetry: _refresh,
@@ -87,7 +87,7 @@ class _MemberRecordsScreenState extends State<MemberRecordsScreen> {
                   }
                   final data = snapshot.data;
                   if (data == null) {
-                    return const Padding(
+                    return Padding(
                       padding: EdgeInsets.only(top: 44),
                       child: EmptyPane(
                         icon: Icons.inbox_rounded,
@@ -123,7 +123,7 @@ class _PackagesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.only(top: 44),
         child: EmptyPane(
           icon: Icons.card_membership_rounded,
@@ -144,8 +144,8 @@ class _PackagesList extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.productName,
-                        style: const TextStyle(
-                          color: AppColors.ink,
+                        style: TextStyle(
+                          color: AppColors.of(context).ink,
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                         ),
@@ -158,12 +158,12 @@ class _PackagesList extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   item.productType,
-                  style: const TextStyle(color: AppColors.muted),
+                  style: TextStyle(color: AppColors.of(context).muted),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _RecordRow(label: 'Start', value: formatDate(item.startDate)),
                 _RecordRow(
                   label: 'Expiry',
@@ -178,7 +178,7 @@ class _PackagesList extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
         ],
       ],
     );
@@ -193,7 +193,7 @@ class _EnrolledList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.only(top: 44),
         child: EmptyPane(
           icon: Icons.event_available_rounded,
@@ -214,8 +214,8 @@ class _EnrolledList extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.className,
-                        style: const TextStyle(
-                          color: AppColors.ink,
+                        style: TextStyle(
+                          color: AppColors.of(context).ink,
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                         ),
@@ -228,12 +228,12 @@ class _EnrolledList extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   item.templateName,
-                  style: const TextStyle(color: AppColors.muted),
+                  style: TextStyle(color: AppColors.of(context).muted),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _RecordRow(label: 'Start', value: formatDate(item.dateStart)),
                 _RecordRow(label: 'Instructor', value: item.instructorName),
                 _RecordRow(
@@ -245,22 +245,22 @@ class _EnrolledList extends StatelessWidget {
                   value: '${item.sessionsRemaining}',
                 ),
                 if (item.timetable.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10),
+                  Text(
                     'Timetable',
                     style: TextStyle(
-                      color: AppColors.ink,
+                      color: AppColors.of(context).ink,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   for (final session in item.timetable)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: EdgeInsets.only(bottom: 8),
                       child: Text(
                         '${formatDate(session.date)} · ${formatTimeRange(session.startTime, session.endTime)} · ${session.instructorName}',
-                        style: const TextStyle(
-                          color: AppColors.muted,
+                        style: TextStyle(
+                          color: AppColors.of(context).muted,
                           height: 1.45,
                         ),
                       ),
@@ -269,7 +269,7 @@ class _EnrolledList extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
         ],
       ],
     );
@@ -284,7 +284,7 @@ class _BookedFreeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.only(top: 44),
         child: EmptyPane(
           icon: Icons.event_note_rounded,
@@ -305,8 +305,8 @@ class _BookedFreeList extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.className,
-                        style: const TextStyle(
-                          color: AppColors.ink,
+                        style: TextStyle(
+                          color: AppColors.of(context).ink,
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                         ),
@@ -319,13 +319,13 @@ class _BookedFreeList extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 if (item.templateName.isNotEmpty)
                   Text(
                     item.templateName,
-                    style: const TextStyle(color: AppColors.muted),
+                    style: TextStyle(color: AppColors.of(context).muted),
                   ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 _RecordRow(label: 'Date', value: formatDate(item.date)),
                 if (item.scheduleDisplay.isNotEmpty)
                   _RecordRow(label: 'Schedule', value: item.scheduleDisplay),
@@ -334,7 +334,7 @@ class _BookedFreeList extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
         ],
       ],
     );
@@ -350,7 +350,7 @@ class _RecordRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -358,8 +358,8 @@ class _RecordRow extends StatelessWidget {
             width: 86,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.muted,
+              style: TextStyle(
+                color: AppColors.of(context).muted,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -367,8 +367,8 @@ class _RecordRow extends StatelessWidget {
           Expanded(
             child: Text(
               value.isEmpty ? '—' : value,
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.of(context).ink,
                 fontWeight: FontWeight.w700,
               ),
             ),

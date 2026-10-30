@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/gym_models.dart';
 import '../services/gym_api.dart';
+import '../ui/app_theme.dart';
+import '../ui/appearance.dart';
 import 'classes_screen.dart';
 import 'home_dashboard.dart';
 import 'profile_screen.dart';
@@ -83,14 +85,14 @@ class _GymShellState extends State<GymShell> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(nearest.productName),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(message),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   'Remaining sessions: ${nearest.remainingSessions}/${nearest.totalSessions}',
                 ),
                 if (expiry != null) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     'Expiry date: ${expiry.toLocal().toIso8601String().split('T').first}',
                   ),
@@ -100,7 +102,7 @@ class _GymShellState extends State<GymShell> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
+                child: Text('OK'),
               ),
             ],
           );
@@ -128,24 +130,83 @@ class _GymShellState extends State<GymShell> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppColors.of(context).variant;
+    const destinations = [
+      (Icons.home_rounded, 'Home'),
+      (Icons.sports_gymnastics_rounded, 'Classes'),
+      (Icons.qr_code_rounded, 'QR'),
+      (Icons.person_rounded, 'Profile'),
+    ];
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _tabs),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: _selectIndex,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Home'),
-          NavigationDestination(
-            icon: Icon(Icons.sports_gymnastics_rounded),
-            label: 'Classes',
-          ),
-          NavigationDestination(icon: Icon(Icons.qr_code_rounded), label: 'QR'),
-          NavigationDestination(
-            icon: Icon(Icons.person_rounded),
-            label: 'Profile',
+      appBar: AppBar(
+        title: const Text('PARAMI'),
+        actions: const [AppearanceControls(onDark: true)],
+      ),
+      drawer: theme == MemberTheme.roseGold
+          ? Drawer(
+              child: SafeArea(
+                child: ListView(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Text('Member workspace'),
+                    ),
+                    for (var i = 0; i < destinations.length; i++)
+                      ListTile(
+                        leading: Icon(destinations[i].$1),
+                        title: Text(destinations[i].$2),
+                        selected: _currentIndex == i,
+                        onTap: () {
+                          Navigator.pop(context);
+                          _selectIndex(i);
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            )
+          : null,
+      body: Row(
+        children: [
+          if (theme == MemberTheme.gold)
+            LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: NavigationRail(
+                      minWidth: 64,
+                      extended: MediaQuery.sizeOf(context).width >= 900,
+                      selectedIndex: _currentIndex,
+                      onDestinationSelected: _selectIndex,
+                      destinations: [
+                        for (final item in destinations)
+                          NavigationRailDestination(
+                            icon: Icon(item.$1),
+                            label: Text(item.$2),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          Expanded(
+            key: const ValueKey('member-pages'),
+            child: IndexedStack(index: _currentIndex, children: _tabs),
           ),
         ],
       ),
+      bottomNavigationBar: theme == MemberTheme.monochrome
+          ? NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: _selectIndex,
+              destinations: [
+                for (final item in destinations)
+                  NavigationDestination(icon: Icon(item.$1), label: item.$2),
+              ],
+            )
+          : null,
     );
   }
 }

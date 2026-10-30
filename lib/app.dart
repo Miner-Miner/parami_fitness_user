@@ -9,6 +9,7 @@ import 'services/gym_api.dart';
 import 'services/connection_settings_store.dart';
 import 'services/session_store.dart';
 import 'ui/app_theme.dart';
+import 'ui/appearance.dart';
 
 class ParamiFitnessApp extends StatefulWidget {
   const ParamiFitnessApp({super.key});
@@ -18,6 +19,8 @@ class ParamiFitnessApp extends StatefulWidget {
 }
 
 class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
+  final AppearanceController _appearance = AppearanceController();
+
   final SessionStore _sessionStore = SessionStore();
   final ConnectionSettingsStore _connectionStore = ConnectionSettingsStore();
 
@@ -29,6 +32,7 @@ class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
   void initState() {
     super.initState();
     _restoreSession();
+    _appearance.restore();
   }
 
   Future<void> _restoreSession() async {
@@ -87,29 +91,44 @@ class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
   }
 
   @override
+  void dispose() {
+    _appearance.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Parami Fitness',
-      theme: gymTheme(),
-      home: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 260),
-        child: _initializing
-            ? const SplashScreen(key: ValueKey('splash'))
-            : _session == null
-            ? LoginScreen(
-                key: const ValueKey('login'),
-                api: _api,
-                connectionSettings: _connectionSettings,
-                onConnectionSettingsChanged: _handleConnectionSettingsChanged,
-                onLoggedIn: _handleLogin,
-              )
-            : GymShell(
-                key: const ValueKey('shell'),
-                api: _api,
-                session: _session!,
-                onLogout: _handleLogout,
-              ),
+    return AppearanceScope(
+      controller: _appearance,
+      child: AnimatedBuilder(
+        animation: _appearance,
+        builder: (context, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Parami Fitness',
+          theme: gymTheme(theme: _appearance.theme),
+          darkTheme: gymTheme(theme: _appearance.theme, dark: true),
+          themeMode: _appearance.dark ? ThemeMode.dark : ThemeMode.light,
+          home: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 260),
+            child: _initializing
+                ? const SplashScreen(key: ValueKey('splash'))
+                : _session == null
+                ? LoginScreen(
+                    key: const ValueKey('login'),
+                    api: _api,
+                    connectionSettings: _connectionSettings,
+                    onConnectionSettingsChanged:
+                        _handleConnectionSettingsChanged,
+                    onLoggedIn: _handleLogin,
+                  )
+                : GymShell(
+                    key: const ValueKey('shell'),
+                    api: _api,
+                    session: _session!,
+                    onLogout: _handleLogout,
+                  ),
+          ),
+        ),
       ),
     );
   }
