@@ -135,7 +135,7 @@ class EmptyPane extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
                 color: AppColors.of(context).ink,
               ),
             ),
@@ -179,7 +179,7 @@ class ErrorPane extends StatelessWidget {
               'We couldn’t load this yet',
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 8),
             Text(
@@ -223,7 +223,7 @@ class StatusPill extends StatelessWidget {
         style: TextStyle(
           color: resolvedColor,
           fontSize: 12,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -245,7 +245,7 @@ class SectionLabel extends StatelessWidget {
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: AppColors.of(context).ink,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

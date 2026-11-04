@@ -31,7 +31,7 @@ class HomeDashboard extends StatelessWidget {
                   'Hello, ${session.name}',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -118,7 +118,7 @@ class _QuickCard extends StatelessWidget {
           SizedBox(height: 28),
           Text(
             label,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -161,7 +161,7 @@ class _ActionCard extends StatelessWidget {
                   style: TextStyle(
                     color: AppColors.of(context).ink,
                     fontSize: 16,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 6),

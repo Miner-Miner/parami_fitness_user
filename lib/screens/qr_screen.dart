@@ -54,7 +54,7 @@ class QrScreen extends StatelessWidget {
             'QR Pass',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: AppColors.of(context).ink,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
             ),
           ),
           SizedBox(height: 8),
@@ -71,7 +71,7 @@ class QrScreen extends StatelessWidget {
                   session.name,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: AppColors.of(context).ink,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 10),
@@ -141,7 +141,7 @@ class QrScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: AppColors.of(context).ink,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                             ),
                       ),
                     ),

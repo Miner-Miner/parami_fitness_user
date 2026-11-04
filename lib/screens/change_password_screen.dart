@@ -104,7 +104,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   'Keep your account secure',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: AppColors.of(context).ink,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 8),

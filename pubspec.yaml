@@ -62,6 +62,31 @@ flutter:
 
   assets:
     - assets/branding/parami_fitness_logo.png
+    - assets/branding/parami_fitness_logo_nobg.png
+
+  fonts:
+    - family: LibreBaskerville
+      fonts:
+        - asset: assets/fonts/LibreBaskerville-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/LibreBaskerville-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/LibreBaskerville-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/LibreBaskerville-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/LibreBaskerville-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/LibreBaskerville-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/LibreBaskerville-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/LibreBaskerville-BoldItalic.ttf
+          weight: 700
+          style: italic
 
   # To add assets to your application, add an assets section, like this:
   # assets:

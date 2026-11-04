@@ -353,7 +353,7 @@ class _CheckInSuccessScreen extends StatelessWidget {
                     'You’re checked in',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: AppColors.of(context).ink,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -418,7 +418,7 @@ class _ResultLine extends StatelessWidget {
           value,
           style: TextStyle(
             color: AppColors.of(context).ink,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ],

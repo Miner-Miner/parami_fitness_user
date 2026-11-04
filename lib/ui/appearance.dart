@@ -104,9 +104,9 @@ class AppearanceControls extends StatelessWidget {
                     ),
                     leading: CircleAvatar(
                       backgroundColor: theme.accent,
-                      child: const Icon(
+                      child: Icon(
                         Icons.palette_outlined,
-                        color: Colors.white,
+                        color: AppColors.forTheme(theme).onAccent,
                       ),
                     ),
                     trailing: controller.theme == theme

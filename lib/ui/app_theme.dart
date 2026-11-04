@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 enum MemberTheme {
   monochrome('Theme 1', 'Black & white', Color(0xFF333333), Color(0xFFF3F3F3)),
-  gold('Theme 2', 'Black, gold & white', Color(0xFF80601F), Color(0xFFF8F5ED)),
+  gold('Theme 2', 'Black, lime & white', Color(0xFFDDFF00), Color(0xFFF8FAED)),
   roseGold(
     'Theme 3',
     'Black, rose gold & white',
@@ -48,7 +48,11 @@ class AppColors extends ThemeExtension<AppColors> {
   Color get ink => dark ? const Color(0xFFF5F5F5) : const Color(0xFF0C0C0C);
   Color get mint => foregroundAccent;
   Color get mintDark => foregroundAccent;
-  Color get lime => dark
+  Color get onAccent =>
+      variant == MemberTheme.gold ? Colors.black : Colors.white;
+  Color get lime => variant == MemberTheme.gold
+      ? Color.lerp(navyBright, Colors.white, 0.7)!
+      : dark
       ? const Color(0xFFF4E5C7)
       : Color.lerp(navyBright, Colors.white, 0.7)!;
   Color get navyLight => navyBright;
@@ -61,8 +65,11 @@ class AppColors extends ThemeExtension<AppColors> {
   Color get line => Color.lerp(mist, navyBright, 0.2)!;
   Color get muted => dark ? const Color(0xFFBBBBBB) : const Color(0xFF646464);
   Color get text => dark ? const Color(0xFFF5F5F5) : ink;
-  Color get foregroundAccent =>
-      dark ? Color.lerp(navyBright, Colors.white, 0.60)! : navyBright;
+  Color get foregroundAccent => variant == MemberTheme.gold
+      ? (dark ? navyBright : const Color(0xFF596600))
+      : dark
+      ? Color.lerp(navyBright, Colors.white, 0.60)!
+      : navyBright;
   Color get success => navyBright;
   Color get card => Color.lerp(
     dark ? const Color(0xFF242424) : Colors.white,
@@ -95,12 +102,13 @@ ThemeData gymTheme({
   final palette = AppColors.forTheme(theme, dark: dark);
   return ThemeData(
     useMaterial3: true,
+    fontFamily: 'LibreBaskerville',
     brightness: dark ? Brightness.dark : Brightness.light,
     extensions: [palette],
     appBarTheme: AppBarTheme(
       centerTitle: palette.rounded,
       backgroundColor: palette.navyBright,
-      foregroundColor: Colors.white,
+      foregroundColor: palette.onAccent,
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: palette.navy,
@@ -115,7 +123,7 @@ ThemeData gymTheme({
     navigationRailTheme: NavigationRailThemeData(
       backgroundColor: palette.navy,
       indicatorColor: palette.navyBright,
-      selectedIconTheme: const IconThemeData(color: Colors.white),
+      selectedIconTheme: IconThemeData(color: palette.onAccent),
       unselectedIconTheme: const IconThemeData(color: Colors.white70),
       selectedLabelTextStyle: const TextStyle(color: Colors.white),
       unselectedLabelTextStyle: const TextStyle(color: Colors.white70),
@@ -132,30 +140,33 @@ ThemeData gymTheme({
       primary: palette.foregroundAccent,
       onPrimary: dark ? Colors.black : Colors.white,
       secondary: palette.navyBright,
-      onSecondary: Colors.white,
+      onSecondary: palette.onAccent,
       surface: palette.card,
       onSurface: palette.text,
       outline: palette.line,
     ),
     textTheme: TextTheme(
+      displayLarge: TextStyle(fontWeight: FontWeight.w700),
+      displayMedium: TextStyle(fontWeight: FontWeight.w700),
+      headlineLarge: TextStyle(fontWeight: FontWeight.w700),
+      headlineMedium: TextStyle(fontWeight: FontWeight.w700),
+      titleSmall: TextStyle(fontWeight: FontWeight.w700),
       displaySmall: TextStyle(
         color: palette.foregroundAccent,
-        fontFamily: palette.editorial ? 'serif' : null,
         fontSize: palette.editorial ? 32 : 34,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         letterSpacing: -1.2,
       ),
       headlineSmall: TextStyle(
         color: palette.foregroundAccent,
-        fontFamily: palette.editorial ? 'serif' : null,
         fontSize: 24,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         letterSpacing: -0.7,
       ),
       titleLarge: TextStyle(
         color: palette.foregroundAccent,
         fontSize: 19,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
       ),
       titleMedium: TextStyle(
         color: palette.foregroundAccent,
@@ -163,7 +174,7 @@ ThemeData gymTheme({
         fontWeight: FontWeight.w700,
       ),
       bodyMedium: TextStyle(color: palette.muted, fontSize: 14, height: 1.45),
-      labelLarge: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.3),
+      labelLarge: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.3),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -185,7 +196,7 @@ ThemeData gymTheme({
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: palette.navyBright,
-        foregroundColor: Colors.white,
+        foregroundColor: palette.onAccent,
         minimumSize: const Size.fromHeight(54),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(palette.radius),
@@ -195,18 +206,18 @@ ThemeData gymTheme({
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: palette.navyBright,
-        foregroundColor: Colors.white,
+        foregroundColor: palette.onAccent,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 17),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(palette.radius),
         ),
-        textStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+        textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
       ),
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: palette.navyBright,
-      contentTextStyle: TextStyle(color: Colors.white),
+      contentTextStyle: TextStyle(color: palette.onAccent),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
   );

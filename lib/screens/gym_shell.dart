@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/gym_models.dart';
@@ -139,7 +141,10 @@ class _GymShellState extends State<GymShell> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PARAMI'),
+        backgroundColor: AppColors.of(context).navy,
+        foregroundColor: Colors.white,
+        toolbarHeight: 88,
+        title: const _BrandHeader(),
         actions: const [AppearanceControls(onDark: true)],
       ),
       drawer: theme == MemberTheme.roseGold
@@ -207,6 +212,76 @@ class _GymShellState extends State<GymShell> {
               ],
             )
           : null,
+    );
+  }
+}
+
+class _BrandHeader extends StatefulWidget {
+  const _BrandHeader();
+
+  @override
+  State<_BrandHeader> createState() => _BrandHeaderState();
+}
+
+class _BrandHeaderState extends State<_BrandHeader> {
+  DateTime _now = DateTime.now();
+  late final Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final now = DateTime.now();
+      if (now.year != _now.year ||
+          now.month != _now.month ||
+          now.day != _now.day ||
+          now.hour != _now.hour ||
+          now.minute != _now.minute) {
+        setState(() => _now = now);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    String twoDigits(int value) => value.toString().padLeft(2, '0');
+    final timestamp =
+        '${twoDigits(_now.hour)}:${twoDigits(_now.minute)} '
+        '${days[_now.weekday - 1]} ${twoDigits(_now.day)} ${twoDigits(_now.month)}';
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            timestamp,
+            style: const TextStyle(fontSize: 12, color: Colors.white),
+          ),
+          const SizedBox(height: 4),
+          // Trim the transparent vertical padding without altering the asset.
+          ClipRect(
+            child: Align(
+              heightFactor: 0.34,
+              child: Image.asset(
+                'assets/branding/parami_fitness_logo_nobg.png',
+                width: 160,
+                height: 160,
+                fit: BoxFit.contain,
+                semanticLabel: 'Parami Fitness',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

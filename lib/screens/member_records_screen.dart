@@ -147,7 +147,7 @@ class _PackagesList extends StatelessWidget {
                         style: TextStyle(
                           color: AppColors.of(context).ink,
                           fontSize: 16,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -217,7 +217,7 @@ class _EnrolledList extends StatelessWidget {
                         style: TextStyle(
                           color: AppColors.of(context).ink,
                           fontSize: 16,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -250,7 +250,7 @@ class _EnrolledList extends StatelessWidget {
                     'Timetable',
                     style: TextStyle(
                       color: AppColors.of(context).ink,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -308,7 +308,7 @@ class _BookedFreeList extends StatelessWidget {
                         style: TextStyle(
                           color: AppColors.of(context).ink,
                           fontSize: 16,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

@@ -59,7 +59,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
               'Classes',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppColors.of(context).ink,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 8),
@@ -225,7 +225,7 @@ class _EnrolledClassCard extends StatelessWidget {
                   style: TextStyle(
                     color: AppColors.of(context).ink,
                     fontSize: 17,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -273,7 +273,7 @@ class _EnrolledClassCard extends StatelessWidget {
               'Timetable',
               style: TextStyle(
                 color: AppColors.of(context).ink,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 8),
@@ -322,7 +322,7 @@ class _ClassCard extends StatelessWidget {
                   style: TextStyle(
                     color: AppColors.of(context).ink,
                     fontSize: 17,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

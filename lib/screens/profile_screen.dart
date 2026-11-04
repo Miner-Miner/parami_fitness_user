@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'Profile',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppColors.of(context).ink,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 8),
@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(
                                     color: AppColors.of(context).ink,
                                     fontSize: 17,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                                 SizedBox(height: 4),
@@ -322,7 +322,7 @@ class _ProfileAction extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: AppColors.of(context).ink,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(height: 4),
