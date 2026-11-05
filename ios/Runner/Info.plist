@@ -51,5 +51,12 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+
+	<!-- Location permission for QR gym check-in -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Parami Fitness uses your location when you scan a QR code to verify that you are at the gym and prevent unauthorized check-ins.</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Parami Fitness uses your location to verify your presence at the gym during QR code check-in.</string>
 </dict>
 </plist>
