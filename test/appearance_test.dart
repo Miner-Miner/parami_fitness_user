@@ -100,8 +100,11 @@ void main() {
           builder: (context, _) => MaterialApp(
             theme: gymTheme(theme: controller.theme, dark: controller.dark),
             home: LoginScreen(
-              api: GymApi(),
-              connectionSettings: ConnectionSettings.defaults(),
+              api: GymApi(baseUrl: 'https://gym.example', database: 'test_db'),
+              connectionSettings: const ConnectionSettings(
+                baseUrl: 'https://gym.example',
+                database: 'test_db',
+              ),
               onConnectionSettingsChanged: (_) async {},
               onLoggedIn: (_) {},
             ),
@@ -138,6 +141,8 @@ void main() {
 }
 
 class _FakeApi extends GymApi {
+  _FakeApi() : super(baseUrl: 'https://gym.example', database: 'test_db');
+
   int reminders = 0;
   @override
   Future<PackageRecord?> nearestExpiry(AuthSession session) async {

@@ -27,6 +27,7 @@ void main() {
     var loggedOut = false;
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient((request) async {
         switch (request.url.path) {
           case '/gym/api/profile':

@@ -27,6 +27,7 @@ void main() {
     final requestedPaths = <String>[];
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient((request) async {
         requestedPaths.add(request.url.path);
         expect(request.headers['cookie'], 'session_id=session-123');

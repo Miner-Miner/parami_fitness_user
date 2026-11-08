@@ -69,6 +69,7 @@ void main() {
   test('QR check-in surfaces server errors', () async {
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient(
         (_) async => http.Response(
           jsonEncode(<String, dynamic>{
@@ -135,6 +136,7 @@ void main() {
   test('loyalty points is absent when no program is configured', () async {
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient(
         (_) async => http.Response(
           jsonEncode(<String, dynamic>{'status': 'success', 'data': false}),
@@ -183,6 +185,7 @@ void main() {
   test('change password surfaces an incorrect current password', () async {
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient(
         (_) async => http.Response(
           jsonEncode(<String, dynamic>{

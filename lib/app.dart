@@ -25,7 +25,8 @@ class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
   final ConnectionSettingsStore _connectionStore = ConnectionSettingsStore();
 
   AuthSession? _session;
-  ConnectionSettings _connectionSettings = ConnectionSettings.defaults();
+  ConnectionSettings? _connectionSettings;
+  String? _startupError;
   bool _initializing = true;
 
   @override
@@ -36,26 +37,39 @@ class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
   }
 
   Future<void> _restoreSession() async {
-    final results = await Future.wait<Object?>([
-      _sessionStore.read(),
-      _connectionStore.read(),
-    ]);
-    final storedSession = results[0] as AuthSession?;
-    final storedSettings = results[1] as ConnectionSettings;
-    await Future<void>.delayed(const Duration(milliseconds: 850));
-    if (!mounted) {
-      return;
-    }
     setState(() {
-      _session = storedSession;
-      _connectionSettings = storedSettings;
-      _initializing = false;
+      _initializing = true;
+      _startupError = null;
     });
+    try {
+      final settings = await _connectionStore.fetch();
+      final previous = await _connectionStore.read();
+      final sameConnection =
+          previous?.normalizedBaseUrl == settings.normalizedBaseUrl &&
+          previous?.database == settings.database;
+      // A session belongs to one server/database and must not cross environments.
+      if (!sameConnection) await _sessionStore.clear();
+      final session = sameConnection ? await _sessionStore.read() : null;
+      await _connectionStore.save(settings);
+      if (!mounted) return;
+      setState(() {
+        _session = session;
+        _connectionSettings = settings;
+        _initializing = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _initializing = false;
+        _startupError =
+            'Unable to load app configuration. Check your connection and try again.';
+      });
+    }
   }
 
   GymApi get _api => GymApi(
-    baseUrl: _connectionSettings.baseUrl,
-    database: _connectionSettings.database,
+    baseUrl: _connectionSettings!.baseUrl,
+    database: _connectionSettings!.database,
   );
 
   Future<void> _handleLogin(AuthSession session) async {
@@ -112,11 +126,32 @@ class _ParamiFitnessAppState extends State<ParamiFitnessApp> {
             duration: const Duration(milliseconds: 260),
             child: _initializing
                 ? const SplashScreen(key: ValueKey('splash'))
+                : _startupError != null
+                ? Scaffold(
+                    body: SafeArea(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(_startupError!, textAlign: TextAlign.center),
+                              const SizedBox(height: 16),
+                              FilledButton(
+                                onPressed: _restoreSession,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 : _session == null
                 ? LoginScreen(
                     key: const ValueKey('login'),
                     api: _api,
-                    connectionSettings: _connectionSettings,
+                    connectionSettings: _connectionSettings!,
                     onConnectionSettingsChanged:
                         _handleConnectionSettingsChanged,
                     onLoggedIn: _handleLogin,

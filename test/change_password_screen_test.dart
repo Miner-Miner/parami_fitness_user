@@ -25,6 +25,7 @@ void main() {
     var requestCount = 0;
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient((_) async {
         requestCount += 1;
         return _success(<String, dynamic>{'user_id': 46});
@@ -48,6 +49,7 @@ void main() {
     var requestCount = 0;
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient((_) async {
         requestCount += 1;
         return _success(<String, dynamic>{'user_id': 46});
@@ -75,6 +77,7 @@ void main() {
   ) async {
     final api = GymApi(
       baseUrl: 'https://gym.example',
+      database: 'test_db',
       client: MockClient(
         (_) async => http.Response(
           jsonEncode(<String, dynamic>{

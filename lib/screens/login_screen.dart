@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/api_config.dart';
 import '../models/connection_settings.dart';
 import '../models/gym_models.dart';
 import '../services/gym_api.dart';
@@ -99,10 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
     await widget.onConnectionSettingsChanged(
       ConnectionSettings(
         baseUrl: result.baseUrl.trim().isEmpty
-            ? ApiConfig.defaultBaseUrl
+            ? widget.connectionSettings.baseUrl
             : result.baseUrl.trim(),
         database: result.database.trim().isEmpty
-            ? ApiConfig.defaultDatabase
+            ? widget.connectionSettings.database
             : result.database.trim(),
       ),
     );
@@ -344,7 +343,7 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
             ),
             SizedBox(height: 10),
             Text(
-              'Leave nothing blank if you want to save custom values. Use the default action to restore the built-in connection.',
+              'Leave nothing blank if you want to save custom values. Use the default action to restore the loaded connection.',
               style: TextStyle(color: AppColors.of(context).muted, height: 1.4),
             ),
           ],
@@ -359,7 +358,7 @@ class _ConnectionSettingsDialogState extends State<_ConnectionSettingsDialog> {
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context, ConnectionSettings.defaults());
+            Navigator.pop(context, widget.initialSettings);
           },
           child: Text('Use default'),
         ),

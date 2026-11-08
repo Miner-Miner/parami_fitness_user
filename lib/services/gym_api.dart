@@ -17,12 +17,13 @@ class ApiException implements Exception {
 }
 
 class GymApi {
-  GymApi({http.Client? client, String? baseUrl, String? database})
-    : _client = client ?? http.Client(),
-      _baseUrl = ApiConfig.normalizeBaseUrl(
-        baseUrl ?? ApiConfig.defaultBaseUrl,
-      ),
-      _database = database ?? ApiConfig.defaultDatabase;
+  GymApi({
+    http.Client? client,
+    required String baseUrl,
+    required String database,
+  }) : _client = client ?? http.Client(),
+       _baseUrl = ApiConfig.normalizeBaseUrl(baseUrl),
+       _database = database;
 
   final http.Client _client;
   final String _baseUrl;

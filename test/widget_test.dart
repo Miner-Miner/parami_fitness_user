@@ -43,8 +43,11 @@ void main() {
       MaterialApp(
         theme: gymTheme(),
         home: LoginScreen(
-          api: GymApi(),
-          connectionSettings: ConnectionSettings.defaults(),
+          api: GymApi(baseUrl: 'https://gym.example', database: 'test_db'),
+          connectionSettings: const ConnectionSettings(
+            baseUrl: 'https://gym.example',
+            database: 'test_db',
+          ),
           onConnectionSettingsChanged: (_) async {},
           onLoggedIn: (_) {},
         ),
@@ -65,9 +68,12 @@ void main() {
       MaterialApp(
         theme: gymTheme(),
         home: LoginScreen(
-          api: GymApi(),
+          api: GymApi(baseUrl: 'https://gym.example', database: 'test_db'),
           showConnectionSettings: true,
-          connectionSettings: ConnectionSettings.defaults(),
+          connectionSettings: const ConnectionSettings(
+            baseUrl: 'https://gym.example',
+            database: 'test_db',
+          ),
           onConnectionSettingsChanged: (_) async {},
           onLoggedIn: (_) {},
         ),
@@ -91,9 +97,12 @@ void main() {
         MaterialApp(
           theme: gymTheme(),
           home: LoginScreen(
-            api: GymApi(),
+            api: GymApi(baseUrl: 'https://gym.example', database: 'test_db'),
             showConnectionSettings: true,
-            connectionSettings: ConnectionSettings.defaults(),
+            connectionSettings: const ConnectionSettings(
+              baseUrl: 'https://gym.example',
+              database: 'test_db',
+            ),
             onConnectionSettingsChanged: (_) async {},
             onLoggedIn: (_) {},
           ),
