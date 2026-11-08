@@ -41,7 +41,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen> {
       widget.fitnessClass.startDate ?? DateTime.now(),
     );
     final lastDate = DateUtils.dateOnly(
-      widget.fitnessClass.endDate ?? DateTime.now().add(Duration(days: 180)),
+      widget.fitnessClass.endDate ??
+          widget.fitnessClass.startDate ??
+          DateTime.now().add(Duration(days: 180)),
     );
     final initial =
         _selectedDate ?? _firstValidDateOrNull(schedule, firstDate, lastDate);
